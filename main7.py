@@ -136,8 +136,10 @@ def calculate_mse_psnr(cover_path: str, stego_path: str):
 
 # ---------------- Application (GUI/TKinter) ----------------
 class StegApp:
-    def __init__(self, root):
+    def __init__(self, root, back_callback):
         self.root = root
+        self.back_callback = back_callback
+        command=lambda: open_lsb_dashboard(self.root, self.back_callback)
         self.root.title("LSB Steganography")
         self.NUM_PAIRS = NUM_PAIRS
         self.secret_data = [("None", "", "", 0, 0) for _ in range(self.NUM_PAIRS)]
@@ -146,7 +148,7 @@ class StegApp:
         self.password = ""
         self.decode_status = [] 
         self.tk_images = [] 
-        self.setup_main_dashboard()
+        self.setup_main_dashboard()  
 
     # --- Core Tkinter Fixes ---
     def _insert_char(self, text_widget, content_list, delay):
@@ -184,11 +186,14 @@ class StegApp:
             return "break"
 
     def setup_main_dashboard(self):
-        for w in self.root.winfo_children(): w.destroy()
-        tk.Label(self.root, text="Main Dashboard", font=("Arial", 18, "bold")).pack(pady=10)
-        tk.Button(self.root, text=f"Encode", width=48, command=self.multi_pair_mode).pack(pady=6)
-        tk.Button(self.root, text="Decode", width=48, command=self.decode_section).pack(pady=6)
-
+    # Clear screen ONCE
+      for w in self.root.winfo_children():
+          w.destroy()
+      for w in self.root.winfo_children(): w.destroy()
+      tk.Label(self.root, text="Main Dashboard", font=("Arial", 18, "bold")).pack(pady=10)
+      tk.Button(self.root, text=f"Encode", width=48, command=self.multi_pair_mode).pack(pady=6)
+      tk.Button(self.root, text="Decode", width=48, command=self.decode_section).pack(pady=6)
+      tk.Button(self.root,text="Back to Algorithm Selection",font=("Arial", 10, "bold"),command=self.back_callback).pack(side="bottom", pady=10)
     def multi_pair_mode(self):
         for w in self.root.winfo_children(): w.destroy()
         tk.Label(self.root, text=f"Multi Pair Mode (LSB Embeds)", font=("Arial", 16, "bold")).pack(pady=8)
@@ -754,18 +759,12 @@ class StegApp:
             fig.legend([legend_handles[0], legend_handles[1]], ["Altered Pixels", "Non Altered Pixels"], loc='lower center', ncol=2)
 
         plt.suptitle("Pixel Alteration Summary: Altered vs. Non Altered (donut charts)"); plt.tight_layout(rect=[0, 0.05, 1, 0.95]); plt.show() 
+        
 
 # ---------------- Run ----------------
 def open_lsb_dashboard(root, back_callback):
     for widget in root.winfo_children():
         widget.destroy()
 
-    app = StegApp(root)   # reuse SAME root window
-
-    back_btn = tk.Button(
-        root,
-        text="← Back to Algorithm Selection",
-        font=("Arial", 10, "bold"),
-        command=back_callback
-    )
-    back_btn.pack(side="bottom", pady=10)
+    app = StegApp(root, back_callback)   # reuse SAME root window
+    
