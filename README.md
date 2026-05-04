@@ -63,4 +63,4 @@ After building, check the `build/` and `dist/` folders for outputs and bundled e
 This project was prepared by Team-10 for an academic project. Check with the original authors for licensing and attribution.
 
 ---
-If you want, I can: add a `requirements.txt`, extract concise usage examples for each `main*.py`, or produce a small demo script — tell me which you'd like next.
+
